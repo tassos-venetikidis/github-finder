@@ -27,6 +27,7 @@ function UserSearch() {
     const trimmed = username.trim();
     if (!trimmed) return;
     setSubmittedUsername(trimmed);
+    setUsername("");
     setRecentUsers((prev) => {
       return [trimmed, ...prev.filter((item) => item !== trimmed)].slice(0, 5);
     });
