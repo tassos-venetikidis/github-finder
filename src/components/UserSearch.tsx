@@ -90,6 +90,9 @@ function UserSearch() {
           onSelect={(user) => {
             setUsername("");
             setSubmittedUsername(user);
+            setRecentUsers((prev) =>
+              [user, ...prev.filter((item) => item !== user)].slice(0, 5),
+            );
           }}
         />
       )}
