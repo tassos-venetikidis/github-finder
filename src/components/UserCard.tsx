@@ -1,5 +1,9 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { checkIfFollowingUSer, followUser } from "../api/github.ts";
+import {
+  checkIfFollowingUSer,
+  followUser,
+  unfollowUser,
+} from "../api/github.ts";
 import { FaGithubAlt, FaUserMinus, FaUserPlus } from "react-icons/fa";
 import type { GitHubUser } from "../types.ts";
 
@@ -23,9 +27,21 @@ function UserCard({ user }: { user: GitHubUser }) {
     },
   });
 
+  // Mutation to unfollow the user
+  const unfollowMutation = useMutation({
+    mutationFn: () => unfollowUser(user.login),
+    onSuccess: () => {
+      console.log(`You have now unfollowed ${user.login}`);
+      refetch();
+    },
+    onError: (err) => {
+      console.error(err.message);
+    },
+  });
+
   function handleFollow() {
     if (isFollowing) {
-      // @todo unfollow
+      unfollowMutation.mutate();
     } else {
       followMutation.mutate();
     }
@@ -38,6 +54,7 @@ function UserCard({ user }: { user: GitHubUser }) {
       <p className="bio">{user.bio}</p>
       <div className="user-card-buttons">
         <button
+          disabled={followMutation.isPending || unfollowMutation.isPending}
           className={`follow-btn ${isFollowing ? "following" : ""}`}
           onClick={handleFollow}
         >
