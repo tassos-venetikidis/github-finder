@@ -60,9 +60,32 @@ async function followUser(username: string) {
   return true;
 }
 
+async function unfollowUser(username: string) {
+  const res = await fetch(
+    `${import.meta.env.VITE_GITHUB_API_URL}/user/following/${username}`,
+    {
+      method: "DELETE",
+      headers: {
+        Accept: "application/vnd.github+json",
+        Authorization: `Bearer ${import.meta.env.VITE_GITHUB_API_TOKEN}`,
+        "X-GitHub-Api-Version": "2026-03-10",
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.message || "Failed to unfollow user");
+  }
+
+  return true;
+}
+
 export {
   fetchGithubUser,
   fetchUserSuggestions,
   checkIfFollowingUSer,
   followUser,
+  unfollowUser,
 };
