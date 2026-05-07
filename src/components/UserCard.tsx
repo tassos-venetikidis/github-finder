@@ -6,6 +6,7 @@ import {
 } from "../api/github.ts";
 import { FaGithubAlt, FaUserMinus, FaUserPlus } from "react-icons/fa";
 import type { GitHubUser } from "../types.ts";
+import { toast } from "sonner";
 
 function UserCard({ user }: { user: GitHubUser }) {
   // Query to check if user displayed is followed
@@ -19,11 +20,11 @@ function UserCard({ user }: { user: GitHubUser }) {
   const followMutation = useMutation({
     mutationFn: () => followUser(user.login),
     onSuccess: () => {
-      console.log(`You are now following ${user.login}`);
+      toast.success(`You are now following ${user.login}`);
       refetch();
     },
     onError: (err) => {
-      console.error(err.message);
+      toast.error(err.message);
     },
   });
 
@@ -31,11 +32,11 @@ function UserCard({ user }: { user: GitHubUser }) {
   const unfollowMutation = useMutation({
     mutationFn: () => unfollowUser(user.login),
     onSuccess: () => {
-      console.log(`You have now unfollowed ${user.login}`);
+      toast.success(`You are no longer following ${user.login}`);
       refetch();
     },
     onError: (err) => {
-      console.error(err.message);
+      toast.error(err.message);
     },
   });
 
