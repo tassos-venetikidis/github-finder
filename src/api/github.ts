@@ -16,4 +16,26 @@ async function fetchUserSuggestions(inputQuery: string) {
   return data.items;
 }
 
-export { fetchGithubUser, fetchUserSuggestions };
+async function checkIfFollowingUSer(username: string) {
+  const res = await fetch(
+    `${import.meta.env.VITE_GITHUB_API_URL}/user/following/${username}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/vnd.github+json",
+        Authorization: `Bearer ${import.meta.env.VITE_GITHUB_API_TOKEN}`,
+        "X-GitHub-Api-Version": "2026-03-10",
+      },
+    },
+  );
+  if (res.status === 204) {
+    return true; // following
+  } else if (res.status === 404) {
+    return false; // not following
+  } else {
+    const errorData = await res.json().catch(() => null);
+    throw new Error(errorData.message || "Failed to check follow status");
+  }
+}
+
+export { fetchGithubUser, fetchUserSuggestions, checkIfFollowingUSer };
